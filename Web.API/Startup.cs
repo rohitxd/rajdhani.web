@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Web.API
 {
@@ -26,6 +27,20 @@ namespace Web.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddCors();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Title = "Web APIs",
+                    Version = "v1",
+                    Description = "Apis for Web initiative. Unauthourized access forbidden.",
+                    TermsOfService = "None",
+                    Contact = new Contact { Name = "Rohit", Email = "rohit.singhal71@gmail.com" },
+                    License = new License { Name = "License"}
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,13 +60,13 @@ namespace Web.API
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
-            //app.UseSwagger();
+            app.UseSwagger();
 
-            ////http://localhost:<random_port>/swagger
-            //app.UseSwaggerUI(c =>
-            //{
-            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Version V1");
-            //});
+            //http://localhost:<random_port>/swagger
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Version V1");
+            });
             app.UseMvc();
         }
     }
